@@ -11,6 +11,8 @@ def generate_dates(start, end, day_delta):
         return_date = (start + delta).date().strftime("%d/%m/%Y")
         start += delta
         flight_dates.append((depart_date, return_date))
+    if len(flight_dates) == 0:
+        print('No flight dates where generated! Check your start/end dates!!')
     return flight_dates
 
 
@@ -36,8 +38,8 @@ def hit_the_site((departure_date, return_date)):
     browser = mechanize.Browser()
     #Dont respect Robots.txt
     browser.set_handle_robots(False)
-    browser.addheaders = [('User-agent', 'FireFox')]
-    response = browser.open('https://caribbean.sita.aero/itd/itd/DoAirSearch'
+    browser.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0')]
+    response = browser.open('http://caribbean.sita.aero/itd/itd/DoAirSearch'
                             '?_originSelected=Airport.YYZ'
                             '&_destinationSelected=Airport.POS'
                             '&_tripType=Return'
@@ -49,4 +51,6 @@ def hit_the_site((departure_date, return_date)):
                             '&_children=0'
                             '&_adults=1'
                             '&_infants=0').read()
+    browser.clear_history()
+    browser.close()
     return response
