@@ -11,12 +11,18 @@ import calendar
 #DAY_DELTA = 7
 #TIMEOUT_SECONDS = 30
 
+#Example Command
+#python Scraper.py 2014/05/25 2015/05/15 4 0 YYZ POS
+
 @click.command()
 @click.argument('start_date')
 @click.argument('end_date')
 @click.argument('day_delta')
 @click.argument('time_out')
-def find_flights(start_date, end_date, day_delta, time_out):
+@click.argument('origin_airport')
+@click.argument('destination_airport')
+def find_flights(start_date, end_date, day_delta, time_out, origin_airport, destination_airport):
+
     start_date = datetime.strptime(start_date, "%Y/%m/%d")
     end_date = datetime.strptime(end_date, "%Y/%m/%d")
     day_delta = int(day_delta)
@@ -31,7 +37,11 @@ def find_flights(start_date, end_date, day_delta, time_out):
     file = open('DataOut/output_'+str(filename)+'.txt', "a")
 
     for flight_date in flight_dates:
-        response = helper.hit_the_site(flight_date)
+        (depart_date, return_date) = flight_date
+        response = helper.hit_the_site(depart_date,
+                                       return_date,
+                                       origin_airport,
+                                       destination_airport)
         soup = BeautifulSoup(response)
         data = helper.parse_data(soup)
         if len(data) == 0:

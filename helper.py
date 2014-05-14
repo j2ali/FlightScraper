@@ -33,24 +33,30 @@ def parse_data(html_response):
     return data
 
 
-def hit_the_site((departure_date, return_date)):
-    print 'Hitting Site'
+def hit_the_site(departure_date, return_date, origin_airport, destination_airport):
     browser = mechanize.Browser()
     #Dont respect Robots.txt
     browser.set_handle_robots(False)
-    browser.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0')]
-    response = browser.open('http://caribbean.sita.aero/itd/itd/DoAirSearch'
-                            '?_originSelected=Airport.YYZ'
-                            '&_destinationSelected=Airport.POS'
-                            '&_tripType=Return'
-                            '&_depdateeu=' + departure_date +
-                            '&_retdateeu=' + return_date +
-                            '&_classType=Economy'
-                            '&requestor=AirSimpleReqsPage'
-                            '&_channelLocale=en'
-                            '&_children=0'
-                            '&_adults=1'
-                            '&_infants=0').read()
+    browser.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) '
+                                         'Gecko/20100101 Firefox/29.0')]
+    url = get_url(departure_date, return_date, origin_airport, destination_airport)
+    print 'Hitting URL %s' % url
+    response = browser.open(url).read()
     browser.clear_history()
     browser.close()
     return response
+
+def get_url(departure_date, return_date, origin_airport, destination_airport):
+    url = 'https://caribbean.sita.aero/itd/itd/DoAirSearch'\
+                            '?_originSelected=Airport.' + origin_airport +\
+                            '&_destinationSelected=Airport.' + destination_airport +\
+                            '&_tripType=Return'\
+                            '&_depdateeu=' + departure_date +\
+                            '&_retdateeu=' + return_date +\
+                            '&_classType=Economy'\
+                            '&requestor=AirSimpleReqsPage'\
+                            '&_channelLocale=en'\
+                            '&_children=0'\
+                            '&_adults=1'\
+                            '&_infants=0'
+    return url
