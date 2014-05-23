@@ -9,7 +9,7 @@ def generate_dates(start, end, day_delta):
     while start < end:
         depart_date = start.date().strftime("%d/%m/%Y")
         return_date = (start + delta).date().strftime("%d/%m/%Y")
-        start += delta
+        start += timedelta(days=7)
         flight_dates.append((depart_date, return_date))
     if len(flight_dates) == 0:
         print('No flight dates where generated! Check your start/end dates!!')
